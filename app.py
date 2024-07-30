@@ -112,7 +112,25 @@ def my_bike(bike_id):
 
 @app.route("/add_bike", methods=["GET", "POST"])
 def add_bike():
-    categories = mongo.db.categories.find()
+    preset_categories = [
+        {"bike_category":"mountain"},
+        {"bike_category": "road"},
+        {"bike_category": "gravel"},
+        {"bike_category": "e-mtb"},
+        {"bike_category": "hybrid"},
+        {"bike_category": "dirt jump/slopestyle"},
+        {"bike_category": "cyclocross"},
+        {"bike_category": "touring"},
+        {"bike_category": "triathlon"},
+    ]
+
+    collection = mongo.db.categories
+    # checks if categories collection has any documents
+    if collection.count_documents({}) == 0:
+        # if no documents are found inserts preset categories
+        collection.insert_many(preset_categories)
+
+    categories = mongo.db.categories.find()    
 
     if request.method == "POST":
         # Gets data from form and converts all values
